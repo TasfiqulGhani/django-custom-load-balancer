@@ -1,0 +1,11 @@
+*.__pycache__
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.DS_Store
+round_robin/api/monitoring/__pycache__/health_checker.cpython-39.pyc
+round_robin/api/proxies/__pycache__/instance_manager.cpython-39.pyc
+round_robin/api/proxies/__pycache__/round_robin.cpython-39.pyc
+round_robin/tests/unit/__pycache__/test_health_checker.cpython-39.pyc
+round_robin/tests/unit/__pycache__/test_round_robin_proxy.cpython-39.pyc
