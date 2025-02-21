@@ -10,20 +10,17 @@ class RoundRobinProxy(Proxy):
     """ Async Round Robin Proxy with Full Dependency Injection """
 
     current_index = 0
-    health_checker = None
 
     def __init__(self, instance_manager, http_client, health_checker, system_monitor):
         """ Inject all dependencies instead of hardcoding them """
         self.instance_manager = instance_manager
         self.http_client = http_client
         self.system_monitor = system_monitor
-
-        if RoundRobinProxy.health_checker is None:
-            RoundRobinProxy.health_checker = health_checker  
+        self.health_checker = health_checker  
 
     async def forward_request(self, data):
         """ Retries with another server asynchronously if the current one fails """
-        healthy_instances = self.instance_manager.get_healthy_instances()
+        healthy_instances = self.health_checker.get_healthy_instances()
 
         if not healthy_instances:
             print("🚨 No healthy instances available. Returning error response.", flush=True)

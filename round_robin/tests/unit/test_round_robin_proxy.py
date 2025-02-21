@@ -20,7 +20,7 @@ class TestRoundRobinProxy(unittest.IsolatedAsyncioTestCase):
 
     async def test_forward_request_success(self):
         """Test if request is forwarded successfully"""
-        self.mock_instance_manager.get_healthy_instances.return_value = ["http://server1:8000/api/process"]
+        self.mock_health_checker.get_healthy_instances.return_value = ["http://server1:8000/api/process"]
 
         # Mock successful response
         mock_response = AsyncMock()
@@ -73,7 +73,7 @@ class TestRoundRobinProxy(unittest.IsolatedAsyncioTestCase):
 
     async def test_forward_request_with_retries_success_on_third_attempt(self):
         """Test if request fails twice and succeeds on the third attempt"""
-        self.mock_instance_manager.get_healthy_instances.return_value = [
+        self.mock_health_checker.get_healthy_instances.return_value = [
             "http://server1:8000/api/process",
             "http://server2:8000/api/process",
             "http://server3:8000/api/process"
