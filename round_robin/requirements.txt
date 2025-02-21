@@ -1,0 +1,10 @@
+Django
+djangorestframework
+requests
+psutil
+docker
+uvicorn==0.27.1 
+httpx==0.24.1
+locust
+python-dotenv
+django-ratelimit

@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis_cache
+    restart: always
+    ports:
+      - "6379:6379"
+  app1:
+    build: ./application_api
+    container_name: app1
+    restart: always
+    ports:
+    - "8101:8000"  
+
+  app2:
+    build: ./application_api
+    container_name: app2
+    restart: always
+    ports:
+      - "8102:8000"  
+
+  app3:
+    build: ./application_api
+    container_name: app3
+    restart: always
+    ports:
+      - "8103:8000" 
+
+  round_robin:
+    build: ./round_robin
+    container_name: round_robin
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./round_robin:/app
+      - "/var/run/docker.sock:/var/run/docker.sock" 
+    depends_on:
+      - app1
+      - app2
+      - app3
+
+  locust:
+    image: locustio/locust
+    container_name: locust
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./locustfile.py:/mnt/locustfile.py
+    depends_on:
+      - round_robin
+    command: -f /mnt/locustfile.py --host=http://round_robin:8080
