@@ -118,79 +118,7 @@ We implement an **intelligent circuit breaker** in `health_checker.py` to handle
 ✅ **Detects failures** (timeouts, errors, and crashes).  
 ✅ **Prevents overloading** failing instances.  
 ✅ **Automatically recovers** once an instance becomes healthy.  
-
-📄 **health_checker.py**
-```python
-import time
-import threading
-import requests
-from django.conf import settings
-from ..monitoring.system_monitor_docker import DockerSystemMonitor
-from ..adapters.docker_adapter import DockerAdapter
-
-class HealthChecker:
-    """ ✅ Monitors instances via Docker and prevents overloading failing servers """
-
-    def __init__(self, instance_manager, system_monitor: DockerSystemMonitor):
-        self.instance_manager = instance_manager
-        self.system_monitor = system_monitor
-        self.docker_adapter = DockerAdapter()
-        self.failed_instances = set()  # ✅ Tracks failing instances
-        self.running = True
-
-        # ✅ Start background health check process
-        self.health_check_thread = threading.Thread(target=self.health_check_loop, daemon=True)
-        self.health_check_thread.start()
-
-    def health_check_loop(self):
-        """ ✅ Runs every 5 seconds to check instance health and refresh instances """
-        while self.running:
-            time.sleep(settings.HEALTH_CHECK_INTERVAL)
-            self.instance_manager.refresh_instances()  # ✅ Fetch latest running instances
-            self.check_instances_health()
-
-    def check_instances_health(self):
-        """ ✅ Checks if instances are running and removes them from the failed list if healthy """
-        for instance_url in list(self.failed_instances):
-            container_name = instance_url.replace("http://", "").split(":")[0]
-
-            is_running = self.docker_adapter.get_container_status(container_name) == "running"
-            is_healthy = self.is_application_healthy(instance_url)
-
-            if not is_running:
-                self.failed_instances.add(instance_url)
-                continue  
-
-            is_overloaded = self.is_container_overloaded(container_name)
-
-            if is_running and not is_overloaded and is_healthy:
-                self.failed_instances.remove(instance_url)
-
-    def is_application_healthy(self, instance_url):
-        """ ✅ Checks if the application is responding to health check API """
-        health_url = instance_url.replace("/api/process/", "/api/process/health")
-
-        try:
-            response = requests.get(health_url, timeout=5)
-            return response.status_code == 200
-        except requests.exceptions.RequestException:
-            return False  
-
-    def is_container_overloaded(self, container_name):
-        """ ✅ Uses DockerSystemMonitor to check CPU & Memory usage """
-        cpu_usage = self.system_monitor.get_cpu_usage(container_name)
-        memory_usage = self.system_monitor.get_memory_usage(container_name)
-
-        return cpu_usage > settings.CPU_THRESHOLD or memory_usage > settings.MEMORY_THRESHOLD
-
-    def mark_failed(self, instance_url):
-        """ ✅ Adds instance to the failed list (Used when request fails) """
-        self.failed_instances.add(instance_url)
-
-    def stop(self):
-        """ ✅ Gracefully stop the health checker """
-        self.running = False
-```
+ 
 ### 🛡️ **Security & Attack Protection**
 ✅ **Attack Detection & Mitigation:** If an IP exceeds a suspicious request threshold, stricter throttling is applied.
 
@@ -200,7 +128,7 @@ class HealthChecker:
 
 ## ✅ **How It Fulfills Requirements**
 ### **Handling API Failures**
-- If an **application API goes down**, the load balancer **removes it** from the available instances.
+- If an **application API goes down**, the health **removes it** from the available instances. Also if we get server errors we keep it in failed instance list for health check.
 - The **HealthChecker** continuously monitors APIs and **re-adds them** if they recover.
 
 ### **Handling Slow APIs**
@@ -255,5 +183,27 @@ curl --location 'http://localhost:8080/api/process/' \
 }
 ```
 
+---
+
+## **📝 Log Hours**
+
+
+| Date       | Phase                  | Hours |
+|------------|------------------------|-------|
+| 2025-02-17 | **Investigation** – Research requirements, analyze constraints | 2.0 |
+| 2025-02-17 | **Design** – Architect system, API health checker logics | 2.0 |
+| 2025-02-18 | **Test** – Test cases for core logics and project structure building | 1.0 |
+| 2025-02-18 | **Development** – Write minimal code to pass tests  | 1.0 |
+| 2025-02-18 | **Refactoring** – Optimize code without breaking tests (TDD Step 3) | 1.0 |
+| 2025-02-19 | **Testing and Development** – Develop health checker | 2.0 |
+| 2025-02-19 | **Bug Fixing** – Fix issues from failed tests | .5 |
+| 2025-02-20 | **Development** – Complete solution and final test cases | 2.0 |
+| 2025-02-20 | **Bug Fixing** – Fix issues from failed tests | 2.5 |
+| 2025-02-21 | **Documentation** – Update API docs, README, and test coverage | 2.0 |
+| 2025-02-22 | **Final Testing & Optimization** – Run final checks, system tuning | 1.0 |
+| 2025-02-22 | **Load testing and some minor fixes** – Final testing before submission | 2.0 |
+
+### Total 14 Hours
+ 
 ---
 

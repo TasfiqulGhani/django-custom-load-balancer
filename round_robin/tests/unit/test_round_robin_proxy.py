@@ -25,12 +25,12 @@ class TestRoundRobinProxy(unittest.IsolatedAsyncioTestCase):
         # Mock successful response
         mock_response = AsyncMock()
         mock_response.status_code = 200
-        mock_response.json = MagicMock(return_value={"success": True})
+        mock_response.json = MagicMock(return_value={"test": "data"})
         self.mock_http_client.post.return_value = mock_response
 
         response, status = await self.proxy.forward_request({"test": "data"})
 
-        self.assertEqual(response, {"success": True})
+        self.assertEqual(response, {"test": "data"})
         self.assertEqual(status, 200)
 
     async def test_forward_request_all_servers_fail(self):
@@ -64,11 +64,11 @@ class TestRoundRobinProxy(unittest.IsolatedAsyncioTestCase):
         """Test handling of successful response"""
         mock_response = MagicMock()
         mock_response.status_code = 200
-        mock_response.json.return_value = {"success": True}
+        mock_response.json.return_value = {"test": "data"}
 
         result, status = self.proxy.handle_response(mock_response, "http://server1:8000/api/process", 3)
 
-        self.assertEqual(result, {"success": True})
+        self.assertEqual(result, {"test": "data"})
         self.assertEqual(status, 200)
 
     async def test_forward_request_with_retries_success_on_third_attempt(self):
@@ -85,7 +85,7 @@ class TestRoundRobinProxy(unittest.IsolatedAsyncioTestCase):
         # Simulate third attempt succeeding
         mock_response_success = AsyncMock()
         mock_response_success.status_code = 200
-        mock_response_success.json = MagicMock(return_value={"success": True})
+        mock_response_success.json = MagicMock(return_value={"test": "data"})
 
         # Mock HTTP client to fail twice, then succeed
         self.mock_http_client.post.side_effect = [mock_response_fail, mock_response_fail, mock_response_success]
@@ -93,5 +93,5 @@ class TestRoundRobinProxy(unittest.IsolatedAsyncioTestCase):
         response, status = await self.proxy.forward_request({"test": "data"})
 
         # Verify that the third attempt succeeded
-        self.assertEqual(response, {"success": True})
+        self.assertEqual(response, {"test": "data"})
         self.assertEqual(status, 200)
