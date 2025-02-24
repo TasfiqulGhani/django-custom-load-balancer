@@ -1,12 +1,12 @@
 # **Round Robin Load Balancer API**
 
 ## 📌 **Goal**
-The objective of this project is to implement a **Round Robin Load Balancer** that distributes requests to multiple **Application API instances** in a **scalable and fault-tolerant** way.
+The objective of this project is to implement a **Round Robin API** that distributes requests to multiple **Application API instances** in a **scalable and fault-tolerant** way.
 
 **Key Features:**
-- Implements **Round Robin Algorithm** to evenly distribute requests.
-- Detects **unhealthy or slow instances** and routes traffic accordingly.
-- Provides Test Cases.
+- Implements **Round Robin API** to evenly distribute requests.
+- Detects **Stopped or slow instances** and routes traffic accordingly.
+- Provides how we can test the system.
 
 ---
 
