@@ -182,28 +182,3 @@ curl --location 'http://localhost:8080/api/process/' \
     "points": 20
 }
 ```
-
----
-
-## **📝 Log Hours**
-
-
-| Date       | Phase                  | Hours |
-|------------|------------------------|-------|
-| 2025-02-17 | **Investigation** – Research requirements, analyze constraints | 2.0 |
-| 2025-02-17 | **Design** – Architect system, API health checker logics | 2.0 |
-| 2025-02-18 | **Test** – Test cases for core logics and project structure building | 1.0 |
-| 2025-02-18 | **Development** – Write minimal code to pass tests  | 1.0 |
-| 2025-02-18 | **Refactoring** – Optimize code without breaking tests (TDD Step 3) | 1.0 |
-| 2025-02-19 | **Testing and Development** – Develop health checker | 2.0 |
-| 2025-02-19 | **Bug Fixing** – Fix issues from failed tests | .5 |
-| 2025-02-20 | **Development** – Complete solution and final test cases | 2.0 |
-| 2025-02-20 | **Bug Fixing** – Fix issues from failed tests | 2.5 |
-| 2025-02-21 | **Documentation** – Update API docs, README, and test coverage | 2.0 |
-| 2025-02-22 | **Final Testing & Optimization** – Run final checks, system tuning | 1.0 |
-| 2025-02-22 | **Load testing and some minor fixes** – Final testing before submission | 2.0 |
-
-### Total 14 Hours
- 
----
-
